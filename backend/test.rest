@@ -1,0 +1,79 @@
+### Variables
+@baseUrl = http://127.0.0.1:8000/api
+@contentType = application/json
+
+### 1. Lister toutes les tâches (GET)
+GET {{baseUrl}}/tasks/
+Accept: {{contentType}}
+
+### 2. Créer une tâche (POST)
+POST {{baseUrl}}/tasks/
+Content-Type: {{contentType}}
+
+{
+    "title": "Apprendre Django REST",
+    "description": "Maîtriser DRF pour le projet",
+    "priority": "high",
+    "status": "todo",
+    "due_date": "2026-04-15"
+}
+
+### 3. Créer une tâche sans description (POST minimal)
+POST {{baseUrl}}/tasks/
+Content-Type: {{contentType}}
+
+{
+    "title": "Tâche simple",
+    "priority": "low"
+}
+
+### 4. Créer une tâche avec titre vide (doit échouer - test validation)
+POST {{baseUrl}}/tasks/
+Content-Type: {{contentType}}
+
+{
+    "title": "   ",
+    "priority": "medium"
+}
+
+### 5. Filtrer par statut (GET avec paramètre)
+GET {{baseUrl}}/tasks/?status=todo
+Accept: {{contentType}}
+
+### 6. Filtrer par priorité (GET avec paramètre)
+GET {{baseUrl}}/tasks/?priority=high
+Accept: {{contentType}}
+
+### 7. Trier par date de création (GET avec ordering)
+GET {{baseUrl}}/tasks/?ordering=created_at
+Accept: {{contentType}}
+
+### 8. Récupérer une tâche spécifique (GET avec ID)
+# Remplace {id} par l'ID réel après avoir créé une tâche
+GET {{baseUrl}}/tasks/1/
+Accept: {{contentType}}
+
+### 9. Modifier une tâche (PATCH)
+# Remplace {id} par l'ID réel
+PATCH {{baseUrl}}/tasks/1/
+Content-Type: {{contentType}}
+
+{
+    "status": "done",
+    "description": "Description mise à jour"
+}
+
+### 10. Toggle statut (PATCH custom action)
+# Remplace {id} par l'ID réel
+PATCH {{baseUrl}}/tasks/1/toggle/
+Accept: {{contentType}}
+
+### 11. Supprimer une tâche (DELETE)
+# Remplace {id} par l'ID réel
+DELETE {{baseUrl}}/tasks/1/
+Accept: {{contentType}}
+
+### Test CORS - Préflight (OPTIONS)
+OPTIONS {{baseUrl}}/tasks/
+Origin: http://localhost:5173
+Access-Control-Request-Method: POST
