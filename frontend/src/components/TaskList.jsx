@@ -8,6 +8,7 @@ import {
   useUpdateTask 
 } from '../hooks/useTasks'
 import { useToast } from '../hooks/useToast'
+import Header from './Header'
 import TaskItem from './TaskItem'
 import TaskForm from './TaskForm'
 import Toast from './Toast'
@@ -105,44 +106,64 @@ function TaskList() {
   const isFormLoading = createMutation.isPending || updateMutation.isPending
 
   if (isLoading) return (
-    <div className="loading-container">
-      <div className="spinner"></div>
-      <p>Chargement des tâches...</p>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+      <span className="loading loading-spinner loading-lg text-primary"></span>
+      <p className="text-base-content/60">Chargement des tâches...</p>
     </div>
   )
   
-  if (error) return <div className="error">Erreur: {error.message}</div>
+  if (error) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="alert alert-error max-w-md">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Erreur: {error.message}</span>
+      </div>
+    </div>
+  )
 
   return (
-    <div className="task-list-container">
-      {toast && (
-        <Toast 
-          message={toast.message} 
-          type={toast.type} 
-          onClose={hideToast} 
-        />
-      )}
+    <div className="min-h-screen bg-base-200 pb-8">
+      <div className="max-w-6xl mx-auto px-4">
+        <Header />
+        
+        {toast && (
+          <div className="fixed top-4 right-4 z-50">
+            <Toast 
+              message={toast.message} 
+              type={toast.type} 
+              onClose={hideToast} 
+            />
+          </div>
+        )}
 
-      <div className="task-list-header">
-        <h1>Task Manager V1</h1>
-        <div className="filters">
-          <select 
-            value={filter} 
-            onChange={(e) => setFilter(e.target.value)}
-          >
-            <option value="all">Toutes les tâches</option>
-            <option value="todo">À faire</option>
-            <option value="done">Terminées</option>
-          </select>
-          <button onClick={handleCreate} className="btn-primary">
-            + Nouvelle Tâche
-          </button>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <h2 className="text-2xl font-bold">Mes Tâches</h2>
+          
+          <div className="flex gap-2">
+            <select 
+              className="select select-bordered select-sm"
+              value={filter} 
+              onChange={(e) => setFilter(e.target.value)}
+            >
+              <option value="all">Toutes</option>
+              <option value="todo">À faire</option>
+              <option value="done">Terminées</option>
+            </select>
+            
+            <button onClick={handleCreate} className="btn btn-primary btn-sm gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Nouvelle tâche
+            </button>
+          </div>
         </div>
-      </div>
 
-      {isFormOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
+        {/* Modal Formulaire */}
+        {isFormOpen && (
+          <div className="modal modal-open">
             <TaskForm
               task={editingTask}
               onSubmit={handleSubmit}
@@ -150,55 +171,84 @@ function TaskList() {
               isLoading={isFormLoading}
             />
           </div>
-        </div>
-      )}
+        )}
 
-      {deleteId && (
-        <ConfirmModal
-          title="Confirmer la suppression"
-          message="Cette action est irréversible. Êtes-vous sûr ?"
-          onConfirm={handleConfirmDelete}
-          onCancel={() => setDeleteId(null)}
-          isLoading={deleteMutation.isPending}
-        />
-      )}
+        {/* Modal Confirmation */}
+        {deleteId && (
+          <ConfirmModal
+            title="Confirmer la suppression"
+            message="Cette action est irréversible. Êtes-vous sûr de vouloir supprimer cette tâche ?"
+            onConfirm={handleConfirmDelete}
+            onCancel={() => setDeleteId(null)}
+            isLoading={deleteMutation.isPending}
+          />
+        )}
 
-      <div className="tasks-grid">
+        {/* Liste des tâches */}
         {tasks?.length === 0 ? (
-          <div className="empty-state">
-            <p>Aucune tâche pour le moment</p>
-            <button onClick={handleCreate} className="btn-primary">
-              Créer votre première tâche
-            </button>
+          <div className="card bg-base-100 shadow-md">
+            <div className="card-body items-center text-center py-16">
+              <div className="text-6xl mb-4">📝</div>
+              <h3 className="text-xl font-semibold mb-2">Aucune tâche</h3>
+              <p className="text-base-content/70 mb-6">Commencez par créer votre première tâche</p>
+              <button onClick={handleCreate} className="btn btn-primary gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Créer une tâche
+              </button>
+            </div>
           </div>
         ) : (
-          tasks?.map((task) => (
-            <TaskItem
-              key={task.id}
-              task={task}
-              onDelete={handleDeleteClick}
-              onToggle={handleToggle}
-              onEdit={handleEdit}
-              isDeleting={deleteMutation.isPending && deleteId === task.id}
-              isToggling={toggleMutation.isPending}
-            />
-          ))
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {tasks?.map((task) => (
+              <TaskItem
+                key={task.id}
+                task={task}
+                onDelete={handleDeleteClick}
+                onToggle={handleToggle}
+                onEdit={handleEdit}
+                isDeleting={deleteMutation.isPending && deleteId === task.id}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Stats */}
+        {tasks?.length > 0 && (
+          <div className="stats shadow mt-8 w-full bg-base-100">
+            <div className="stat">
+              <div className="stat-figure text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <div className="stat-title">Total</div>
+              <div className="stat-value text-primary">{tasks.length}</div>
+            </div>
+            
+            <div className="stat">
+              <div className="stat-figure text-warning">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="stat-title">À faire</div>
+              <div className="stat-value text-warning">{tasks.filter(t => t.status === 'todo').length}</div>
+            </div>
+            
+            <div className="stat">
+              <div className="stat-figure text-success">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <div className="stat-title">Terminées</div>
+              <div className="stat-value text-success">{tasks.filter(t => t.status === 'done').length}</div>
+            </div>
+          </div>
         )}
       </div>
-
-      {tasks?.length > 0 && (
-        <div className="stats">
-          <span className="stat-item">
-            <strong>{tasks.length}</strong> Total
-          </span>
-          <span className="stat-item">
-            <strong>{tasks.filter(t => t.status === 'todo').length}</strong> À faire
-          </span>
-          <span className="stat-item">
-            <strong>{tasks.filter(t => t.status === 'done').length}</strong> Terminées
-          </span>
-        </div>
-      )}
     </div>
   )
 }

@@ -2,76 +2,40 @@
 @baseUrl = http://127.0.0.1:8000/api
 @contentType = application/json
 
+### Register - Créer un nouvel utilisateur
+POST {{baseUrl}}/auth/register/
+Content-Type: {{contentType}}
+
+{
+    "username": "nouveauuser",
+    "email": "nouveau@test.com",
+    "password": "password123",
+    "password_confirm": "password123"
+}
+
+### JWT - Login (obtenir tokens)
+POST http://127.0.0.1:8000/api/token/
+Content-Type: application/json
+
+{
+    "username": "nouveauuser",
+    "password": "password123"
+}
+
 ### 1. Lister toutes les tâches (GET)
 GET {{baseUrl}}/tasks/
-Accept: {{contentType}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc1NzM2OTg2LCJpYXQiOjE3NzU3MzYwODYsImp0aSI6ImRiM2UyN2JmMjgxZjQ5OTg5NGY5OWRiNTRiZDc5YWRlIiwidXNlcl9pZCI6IjMifQ.KwO6SEP2M5WT3bbbUWQFR5Mokv-PcfbxCbtSjPOsIN0
 
-### 2. Créer une tâche (POST)
+###
 POST {{baseUrl}}/tasks/
 Content-Type: {{contentType}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzc1NzM1ODIwLCJpYXQiOjE3NzU3MzQ5MjAsImp0aSI6IjFhZDZiNzc0M2Q0ODRiOTU4OWMyNGYxNDc3ZmZhZWExIiwidXNlcl9pZCI6IjIifQ.lhvduUeMI5dLnzbCZHPKP4U8VZHecBBHM3vjRSz6tCY
 
 {
-    "title": "Apprendre Django REST",
-    "description": "Maîtriser DRF pour le projet",
+    "title": "Ma tâche sécurisée",
     "priority": "high",
-    "status": "todo",
-    "due_date": "2026-04-15"
+    "status": "todo"
 }
-
-### 3. Créer une tâche sans description (POST minimal)
-POST {{baseUrl}}/tasks/
-Content-Type: {{contentType}}
-
-{
-    "title": "Tâche simple",
-    "priority": "low"
-}
-
-### 4. Créer une tâche avec titre vide (doit échouer - test validation)
-POST {{baseUrl}}/tasks/
-Content-Type: {{contentType}}
-
-{
-    "title": "   ",
-    "priority": "medium"
-}
-
-### 5. Filtrer par statut (GET avec paramètre)
-GET {{baseUrl}}/tasks/?status=todo
-Accept: {{contentType}}
-
-### 6. Filtrer par priorité (GET avec paramètre)
-GET {{baseUrl}}/tasks/?priority=high
-Accept: {{contentType}}
-
-### 7. Trier par date de création (GET avec ordering)
-GET {{baseUrl}}/tasks/?ordering=created_at
-Accept: {{contentType}}
-
-### 8. Récupérer une tâche spécifique (GET avec ID)
-# Remplace {id} par l'ID réel après avoir créé une tâche
-GET {{baseUrl}}/tasks/1/
-Accept: {{contentType}}
-
-### 9. Modifier une tâche (PATCH)
-# Remplace {id} par l'ID réel
-PATCH {{baseUrl}}/tasks/1/
-Content-Type: {{contentType}}
-
-{
-    "status": "done",
-    "description": "Description mise à jour"
-}
-
-### 10. Toggle statut (PATCH custom action)
-# Remplace {id} par l'ID réel
-PATCH {{baseUrl}}/tasks/1/toggle/
-Accept: {{contentType}}
-
-### 11. Supprimer une tâche (DELETE)
-# Remplace {id} par l'ID réel
-DELETE {{baseUrl}}/tasks/1/
-Accept: {{contentType}}
 
 ### Test CORS - Préflight (OPTIONS)
 OPTIONS {{baseUrl}}/tasks/

@@ -16,87 +16,103 @@ function TaskForm({ task, onSubmit, onCancel, isLoading }) {
   const handleFormSubmit = (data) => {
     onSubmit(data)
     if (!task) {
-      reset(defaultTaskValues) // Reset si création
+      reset(defaultTaskValues)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="task-form">
-      <h2>{task ? 'Modifier la tâche' : 'Nouvelle tâche'}</h2>
+    <div className="modal-box max-w-lg">
+      <h3 className="font-bold text-lg mb-4">
+        {task ? '✏️ Modifier la tâche' : '➕ Nouvelle tâche'}
+      </h3>
       
-      <div className="form-group">
-        <label htmlFor="title">Titre *</label>
-        <input
-          id="title"
-          type="text"
-          {...register('title')}
-          className={errors.title ? 'error' : ''}
-          placeholder="Nom de la tâche"
-        />
-        {errors.title && (
-          <span className="error-message">{errors.title.message}</span>
-        )}
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="description">Description</label>
-        <textarea
-          id="description"
-          rows={3}
-          {...register('description')}
-          placeholder="Détails de la tâche (optionnel)"
-        />
-        {errors.description && (
-          <span className="error-message">{errors.description.message}</span>
-        )}
-      </div>
-
-      <div className="form-row">
-        <div className="form-group">
-          <label htmlFor="priority">Priorité *</label>
-          <select id="priority" {...register('priority')}>
-            <option value="low">Basse</option>
-            <option value="medium">Moyenne</option>
-            <option value="high">Haute</option>
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="status">Statut *</label>
-          <select id="status" {...register('status')}>
-            <option value="todo">À faire</option>
-            <option value="done">Terminée</option>
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="due_date">Date limite</label>
-          <input 
-            type="date" 
-            id="due_date" 
-            {...register('due_date')} 
+      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text font-medium">Titre *</span>
+          </label>
+          <input
+            type="text"
+            placeholder="Nom de la tâche"
+            className={`input input-bordered w-full ${errors.title ? 'input-error' : ''}`}
+            {...register('title')}
           />
+          {errors.title && (
+            <label className="label">
+              <span className="label-text-alt text-error">{errors.title.message}</span>
+            </label>
+          )}
         </div>
-      </div>
 
-      <div className="form-actions">
-        <button 
-          type="button" 
-          onClick={onCancel} 
-          className="btn-secondary"
-          disabled={isLoading}
-        >
-          Annuler
-        </button>
-        <button 
-          type="submit" 
-          disabled={isLoading} 
-          className="btn-primary"
-        >
-          {isLoading ? 'Enregistrement...' : task ? 'Modifier' : 'Créer'}
-        </button>
-      </div>
-    </form>
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text font-medium">Description</span>
+          </label>
+          <textarea
+            placeholder="Détails de la tâche (optionnel)"
+            className={`textarea textarea-bordered w-full h-24 ${errors.description ? 'textarea-error' : ''}`}
+            {...register('description')}
+          />
+          {errors.description && (
+            <label className="label">
+              <span className="label-text-alt text-error">{errors.description.message}</span>
+            </label>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-medium">Priorité *</span>
+            </label>
+            <select className="select select-bordered w-full" {...register('priority')}>
+              <option value="low">🟢 Basse</option>
+              <option value="medium">🟡 Moyenne</option>
+              <option value="high">🔴 Haute</option>
+            </select>
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-medium">Statut *</span>
+            </label>
+            <select className="select select-bordered w-full" {...register('status')}>
+              <option value="todo">⏳ À faire</option>
+              <option value="done">✅ Terminée</option>
+            </select>
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-medium">Date limite</span>
+            </label>
+            <input 
+              type="date" 
+              className="input input-bordered w-full"
+              {...register('due_date')} 
+            />
+          </div>
+        </div>
+
+        <div className="modal-action pt-4">
+          <button 
+            type="button" 
+            onClick={onCancel} 
+            className="btn btn-ghost"
+            disabled={isLoading}
+          >
+            Annuler
+          </button>
+          <button 
+            type="submit" 
+            className={`btn btn-primary ${isLoading ? 'loading' : ''}`}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Enregistrement...' : task ? 'Modifier' : 'Créer'}
+          </button>
+        </div>
+      </form>
+    </div>
   )
 }
 
