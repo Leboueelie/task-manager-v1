@@ -64,7 +64,10 @@ TEMPLATES = [
 # DATABASE
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgres://postgres:postgres@localhost:5432/taskmanager'
+        default=os.getenv(
+            'DATABASE_URL', 
+            'postgres://postgres:postgres@localhost:5432/taskmanager'
+        )
     )
 }
 
