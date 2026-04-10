@@ -1,8 +1,0 @@
-[phases.build]
-cmds = ["cd backend && pip install -r requirements.txt"]
-
-[phases.setup]
-nixPkgs = ["python312", "gcc"]
-
-[start]
-cmd = "cd backend && python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT"
