@@ -93,7 +93,16 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:5173,http://127.0.0.1:5173').split(',')
+# Récupère l'URL frontend depuis les variables d'env
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+# Ajoute l'URL Vercel depuis les variables d'environnement
+vercel_url = os.getenv('FRONTEND_URL')
+if vercel_url:
+    CORS_ALLOWED_ORIGINS.append(vercel_url)
 
 # DRF
 REST_FRAMEWORK = {
