@@ -9,7 +9,7 @@ function Header() {
     <div className="navbar bg-base-100 shadow-lg mb-6">
       <div className="navbar-start">
         <span className="text-2xl">📋</span>
-        <span className="text-xl font-bold ml-2">Task Manager</span>
+        <span className="text-xl font-bold ml-2">Rôc Lie</span>
       </div>
       
       <div className="navbar-end gap-2">

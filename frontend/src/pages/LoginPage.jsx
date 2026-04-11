@@ -42,7 +42,7 @@ function LoginPage() {
         <div className="card-body">
           <div className="text-center mb-6">
             <h1 className="text-3xl font-bold">🔐 Connexion</h1>
-            <p className="text-base-content/70 mt-2">Bienvenue sur Task Manager</p>
+            <p className="text-base-content/70 mt-2">Bienvenue sur Rôc Lie votre gestionaire de tâche</p>
           </div>
           
           {error && (
